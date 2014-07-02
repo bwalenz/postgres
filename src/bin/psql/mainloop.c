@@ -7,7 +7,7 @@
  */
 #include "postgres_fe.h"
 #include "mainloop.h"
-
+#include "dsql.h"
 
 #include "command.h"
 #include "common.h"
@@ -255,7 +255,10 @@ MainLoop(FILE *source)
 
 				/* execute query */
 				success = SendQuery(query_buf->data);
-				slashCmdStatus = success ? PSQL_CMD_SEND : PSQL_CMD_ERROR;
+		        /* Save the query to the remote monitor server. */ 	
+                save_query_to_remote(query_buf->data);
+
+            	slashCmdStatus = success ? PSQL_CMD_SEND : PSQL_CMD_ERROR;
 
 				/* transfer query to previous_buf by pointer-swapping */
 				{
